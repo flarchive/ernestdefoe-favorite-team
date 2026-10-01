@@ -1,0 +1,210 @@
+// ── Team logo badge under the avatar ───────────────────────────────────────
+.FavTeamBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--body-bg, #fff);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.FavTeamBadge-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+// ── The club as a corner wedge on the post ─────────────────────────────────
+//
+// 🚨 The wedge lives INSIDE .Post-body, which is the white card.
+//
+// It is positioned against its nearest positioned ancestor, and .Post-body is
+// the only element in a post that is both positioned and clipping. Put it a
+// level up and it anchors to the page instead — present in the DOM and nowhere
+// on screen.
+.FavTeamWedge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  // 🚨 Sized against a SHORT post, not a long one. A corner accent has to be
+  // judged on the smallest card it will ever sit in, which on a forum is a
+  // two-word reply — at 112px the club mark simply became the post.
+  width: 86px;
+  height: 86px;
+  pointer-events: none;
+  overflow: hidden;
+  // 🚨 The outer corner matches the CARD's radius (8px on .Post-body). A square
+  // corner pushes a hard right angle through the curve, and the card looks
+  // broken at exactly the point the eye is drawn to.
+  border-radius: 100% 0 8px 0;
+  // Reaches full strength well before the crest sits on it, so the crest has a
+  // solid ground rather than a fading one.
+  background: linear-gradient(135deg, transparent 2%, var(--fav-team, @control-bg) 52%);
+}
+
+.FavTeamWedge-crest {
+  position: absolute;
+  right: 9px;
+  bottom: 8px;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55));
+}
+
+// 🚨 The post content sits ABOVE the wedge, so the wedge can never make a word
+// unreadable — it only shows through where there is no text.
+.FavTeam-post .Post-body > *:not(.FavTeamWedge) {
+  position: relative;
+  z-index: 1;
+}
+
+// Room at the foot of the card so a short post still shows the wedge whole
+// rather than having its last line sit across the crest.
+.FavTeam-post .Post-body {
+  padding-bottom: 28px;
+}
+
+// The club also rings the author's avatar, which is what ties the two together.
+.FavTeam-post .Post-side .Avatar {
+  box-shadow: 0 0 0 2px var(--fav-team, @control-bg), 0 6px 16px -10px rgba(0, 0, 0, 0.8);
+}
+
+// 🚨 On a phone the wedge SHRINKS; it is not hidden.
+//
+// The card is still there and still the member's post — but a 86px corner on a
+// ~330px card is a quarter of its width, which is the same mistake as sizing it
+// against a long post. The avatar ring goes, because core moves the avatar into
+// the post header at this width where a coloured ring reads as a notification.
+@media (max-width: 767px) {
+  .FavTeamWedge {
+    width: 62px;
+    height: 62px;
+  }
+
+  .FavTeamWedge-crest {
+    right: 7px;
+    bottom: 6px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .FavTeam-post .Post-body {
+    padding-bottom: 20px;
+  }
+
+  .FavTeam-post .Post-side .Avatar {
+    box-shadow: none;
+  }
+}
+
+// On the profile / user card, overlay the badge on the avatar's bottom-right
+// corner (the avatar sits in the first column of the .UserCard-profile grid).
+.UserCard-profile {
+  position: relative;
+
+  > .FavTeamBadge {
+    position: absolute;
+    top: 70px;
+    left: 70px;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--body-bg, #fff);
+
+    .FavTeamBadge-logo {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+
+// ── Account-settings control ───────────────────────────────────────────────
+.FavoriteTeamSettings {
+  &-current {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  &-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  &-name {
+    font-weight: 600;
+  }
+
+  &-none {
+    color: var(--muted-color, #9ca3af);
+    font-style: italic;
+  }
+}
+
+// ── Team picker grid ───────────────────────────────────────────────────────
+.FavTeamPicker-help {
+  margin-bottom: 12px;
+  color: var(--muted-color, #9ca3af);
+}
+
+.FavTeamPicker-search {
+  margin-bottom: 14px;
+}
+
+.FavTeamPicker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.FavTeamPicker-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px;
+  background: var(--control-bg, #f3f4f6);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+  text-align: center;
+
+  &:hover {
+    background: var(--control-bg, #e5e7eb);
+  }
+
+  &.is-selected {
+    border-color: var(--primary-color, #b22222);
+    background: rgba(178, 34, 34, 0.08);
+  }
+}
+
+.FavTeamPicker-tileLogo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.FavTeamPicker-tileName {
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.FavTeamPicker-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
