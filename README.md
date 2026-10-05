@@ -2,13 +2,24 @@
 
 > **Read-only archive of released versions of ernestdefoe/favorite-team.** Not for installation: use [Packagist](https://packagist.org/packages/ernestdefoe/favorite-team) or the [upstream repository](https://github.com/ernestdefoe/favorite-team).
 
-**0** versions archived · Latest: [`v2.3.1`](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.3.1) · License: `MIT` · Flarum: `^2.0`
+**16** versions archived · Latest: [`v2.3.1`](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.3.1) · License: `MIT` · Flarum: `^2.0`
 
 ## Archived Versions
 
 | Version | Released | Flarum | Source |
 |---|---|---|---|
-| — | — | — | — |
+| `2.0.0` | 2026-05-30 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.0.0) |
+| `2.0.1` | 2026-05-30 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.0.1) |
+| `2.0.2` | 2026-05-30 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.0.2) |
+| `2.0.3` | 2026-05-30 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.0.3) |
+| `2.0.4` | 2026-06-21 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.0.4) |
+| `2.0.5` | 2026-07-19 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.0.5) |
+| `v2.1.0` | 2026-10-01 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.1.0) |
+| `v2.1.1` | 2026-10-01 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.1.1) |
+| `v2.1.2` | 2026-10-01 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.1.2) |
+| `v2.1.3` | 2026-10-01 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-favorite-team/tree/archive/v2.1.3) |
+
+[View all 16 versions](https://github.com/flarchive/ernestdefoe-favorite-team/tags)
 
 Catalog entry: [packages/ernestdefoe-favorite-team.json](https://github.com/flarchive/archive-index/blob/main/packages/ernestdefoe-favorite-team.json)
 
