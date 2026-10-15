@@ -1,0 +1,291 @@
+// ── Team logo badge under the avatar ───────────────────────────────────────
+.FavTeamBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--body-bg, #fff);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.FavTeamBadge-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+// ── The club as a corner wedge on the post ─────────────────────────────────
+//
+// 🚨 TWO pseudo-elements, matching the XenForo build exactly.
+//
+// ::after is the wedge, ::before is the crest. They are separate because the
+// crest needs `filter: drop-shadow(...)` and the wedge must not have it — a
+// filter applies to the whole element, so one pseudo-element carrying both
+// would shadow the gradient too.
+//
+// That shadow is the whole reason the crest reads: the wedge is the club's
+// colour and so is the club's crest, so Alabama crimson sat on Alabama crimson
+// and the corner rendered with no mark on it at all. XenForo solved it this
+// way and it is the right answer — a dark disc behind the crest also separates
+// it, but it reads as a badge stuck on the corner rather than part of it.
+//
+// 🚨 Drawn on .Post-body because that is the white card: the only element in a
+// post that is both positioned and clipping. Injecting an element instead put
+// it a level up, where it anchored to .Post and hung below the card across the
+// Reply link.
+//
+// 🚨 The fallback colour is a LITERAL. @control-bg looked like a Flarum
+// variable and is not one, and an undefined variable in an extension's LESS is
+// FATAL — the recompile throws and every page returns 500. That is a different
+// failure from bad custom_less, which is merely dropped.
+.FavTeam-post .Post-body {
+  position: relative;
+
+  // The wedge itself.
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    // 🚨 Sized against a SHORT post. A corner accent has to be judged on the
+    // smallest card it will ever sit in — on a forum that is a two-word reply,
+    // and at 112px the club mark simply became the post.
+    width: 86px;
+    height: 86px;
+    pointer-events: none;
+    // The outer corner matches the card's own 8px radius. A square corner
+    // pushes a right angle through the curve and the card looks broken at
+    // exactly the point the eye is drawn to.
+    border-radius: 100% 0 8px 0;
+    // Reaches full strength well before the crest sits on it, so the crest has
+    // a solid ground rather than a fading one.
+    background-image: linear-gradient(135deg, transparent 2%, var(--fav-team, #9aa5b1) 52%);
+  }
+
+  // The crest, on its own layer so the shadow is its alone.
+  &::before {
+    content: '';
+    position: absolute;
+    right: 9px;
+    bottom: 8px;
+    z-index: 1;
+    width: 42px;
+    height: 42px;
+    pointer-events: none;
+    background-image: var(--fav-crest, none);
+    background-repeat: no-repeat;
+    background-position: center;
+    // 🚨 `contain`, not a fixed size. ESPN crests are not all square, and a
+    // fixed 42x42 squashes the wide ones.
+    background-size: contain;
+    /*
+     * 🚨 Two tight shadows in the halo colour draw an OUTLINE; the third is
+     * the depth shadow the XenForo build uses.
+     *
+     * An outline is what makes this work for all 136 clubs rather than most of
+     * them. Measured: 88 crests read better as ESPN's 500-dark variant, but 30
+     * clubs have NO variant that contrasts with their own colour — the crest is
+     * the club colour, because of course it is. The outline contrasts with the
+     * crest, and where crest and wedge are nearly the same colour it therefore
+     * contrasts with the wedge too, so one rule covers both cases.
+     */
+    filter:
+      drop-shadow(0 0 1px var(--fav-halo, rgba(10, 12, 16, 0.85)))
+      drop-shadow(0 0 1px var(--fav-halo, rgba(10, 12, 16, 0.85)))
+      drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  }
+}
+
+// 🚨 The post content sits ABOVE the wedge.
+//
+// A positioned pseudo-element paints after the in-flow content, so without
+// this the wedge covers the end of a long post and the last words simply
+// disappear behind it. Raising the content means the wedge can only ever show
+// through where there is no text.
+.FavTeam-post .Post-body > * {
+  position: relative;
+  z-index: 1;
+}
+
+// 🚨 The text WRAPS around the wedge instead of running under it.
+//
+// Two floats the forum JS puts at the start of the body reserve the wedge's
+// corner of the content (helpers/wedgeReserve.js has the whole story). The
+// body becomes a flow root so they count towards its height — without that a
+// float could hang out of the card and push the Reply / Like row about.
+.FavTeam-post .Post-body {
+  display: flow-root;
+}
+
+.FavTeam-reserveGap,
+.FavTeam-reserveCurve {
+  float: right;
+  clear: right;
+  display: block;
+  pointer-events: none;
+}
+
+.FavTeam-reserveGap {
+  width: 0;
+}
+
+.FavTeam-reserveCurve {
+  // Breathing room between the last words and the wedge's edge. A float's
+  // shape is clipped to its margin box, so the polygon the JS draws needs this
+  // margin to have anywhere to put it.
+  margin-left: 8px;
+}
+
+// 🚨 Specific enough to actually win. A plain `.FavTeam-post .Post-body` rule
+// lost to the theme's own padding and computed back as 14px, so the wedge had
+// nothing to clear and a short post's last line sat across the crest.
+.CommentPost.FavTeam-post .Post-body {
+  padding-bottom: 34px;
+}
+
+// The club also rings the author's avatar, which is what ties the two together.
+.FavTeam-post .Post-side .Avatar {
+  box-shadow: 0 0 0 2px var(--fav-team, #9aa5b1), 0 6px 16px -10px rgba(0, 0, 0, 0.8);
+}
+
+// 🚨 On a phone the wedge SHRINKS; it is not hidden.
+//
+// The card is still there and still the member's post — but an 86px corner on
+// a ~330px card is a quarter of its width, which is the same mistake as sizing
+// it against a long post. The avatar ring goes, because core moves the avatar
+// into the post header at this width where a coloured ring reads as a
+// notification dot.
+@media (max-width: 767px) {
+  .FavTeam-post .Post-body {
+    &::after {
+      width: 62px;
+      height: 62px;
+    }
+
+    &::before {
+      right: 7px;
+      bottom: 6px;
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  .CommentPost.FavTeam-post .Post-body {
+    padding-bottom: 24px;
+  }
+
+  .FavTeam-post .Post-side .Avatar {
+    box-shadow: none;
+  }
+}
+
+// On the profile / user card, overlay the badge on the avatar's bottom-right
+// corner (the avatar sits in the first column of the .UserCard-profile grid).
+.UserCard-profile {
+  position: relative;
+
+  > .FavTeamBadge {
+    position: absolute;
+    top: 70px;
+    left: 70px;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--body-bg, #fff);
+
+    .FavTeamBadge-logo {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+
+// ── Account-settings control ───────────────────────────────────────────────
+.FavoriteTeamSettings {
+  &-current {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  &-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  &-name {
+    font-weight: 600;
+  }
+
+  &-none {
+    color: var(--muted-color, #9ca3af);
+    font-style: italic;
+  }
+}
+
+// ── Team picker grid ───────────────────────────────────────────────────────
+.FavTeamPicker-help {
+  margin-bottom: 12px;
+  color: var(--muted-color, #9ca3af);
+}
+
+.FavTeamPicker-search {
+  margin-bottom: 14px;
+}
+
+.FavTeamPicker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.FavTeamPicker-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px;
+  background: var(--control-bg, #f3f4f6);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+  text-align: center;
+
+  &:hover {
+    background: var(--control-bg, #e5e7eb);
+  }
+
+  &.is-selected {
+    border-color: var(--primary-color, #b22222);
+    background: rgba(178, 34, 34, 0.08);
+  }
+}
+
+.FavTeamPicker-tileLogo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.FavTeamPicker-tileName {
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.FavTeamPicker-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
